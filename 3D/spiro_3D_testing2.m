@@ -1,6 +1,6 @@
 % TO DO %
 % rotate the successor w vector to be fixed in the coordinate frame of the
-% predecessor link, instead of being an absolute vector as it is right now
+% predecessor link, instead of being an inertial frame vector
 
 clear
 clc
@@ -28,8 +28,8 @@ widx = w(:,count) ; % angular velocity vector of first link
 o = norm(widx) ; % angular velocity magnitude of first link
 widx = widx./o ; % normalize rotation vector
 
-% rotation quaternion matrix of first link
-qidx = [cos(t./2) ;
+% rotation quaternions of first link
+qidx = [cos(o*t./2) ;
         widx(1)*sin(o*t./2) ;
         widx(2)*sin(o*t./2) ;
         widx(3)*sin(o*t./2)] ;
@@ -42,11 +42,11 @@ hold on
 
 count = 2 ;
 for idx1 = 4:3:3*n
-    widx = w(:,count) ; % angular velocity vector of each link
-    o = norm(widx) ; % angular velocity magnitude of each link
+    widx = w(:,count) ; % initial angular velocity vector of link
+    o = norm(widx) ; % angular velocity magnitude of link
     widx = widx./o ; % normalize rotation vector
 
-    % rotation quaternion matrix of first link
+    % rotation quaternions of each link
     qidx = [cos(o*t./2) ;
             widx(1)*sin(o*t./2) ;
             widx(2)*sin(o*t./2) ;

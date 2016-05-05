@@ -1,0 +1,22 @@
+mcc -o spirographApp -W main:spirographApp -T link:exe -d /Users/Home/Code/spirograph/spirographApp/for_testing -v /Users/Home/Code/spirograph/spirographApp.m 
+Compiler version: 6.1 (R2015b)
+
+Dependency analysis by REQUIREMENTS.
+
+[Warning: Adding path "/Users/Home/Code/spirograph" to Compiler path instance.] 
+[] 
+Parsing file "/Users/Home/Code/spirograph/spirographApp.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 0 temporary MEX authorization files.
+Generating file "/Users/Home/Code/spirograph/spirographApp/for_testing/readme.txt".
+Generating file "/Users/Home/Code/spirograph/spirographApp/for_testing/run_spirographApp.sh".
+Packaging...
+Adding custom icon /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_icon.icns to /Users/Home/Code/spirograph/spirographApp/for_testing/spirographApp.app.
+Creating the bundle...
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/maci64/setup.app to /Users/Home/Code/spirograph/spirographApp/for_redistribution/MyAppInstaller_web.app.
+Copying /Users/Home/Code/spirograph/spirographApp/for_redistribution/bundle.zip to /Users/Home/Code/spirograph/spirographApp/for_redistribution/MyAppInstaller_web.app/Contents/Resources/bundle.zip.
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_splash.png to /Users/Home/Code/spirograph/spirographApp/for_redistribution/MyAppInstaller_web.app/Contents/Resources/splash.png.
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_icon.icns to /Users/Home/Code/spirograph/spirographApp/for_redistribution/MyAppInstaller_web.app/Contents/Resources/installer.icns.
+Web based installer created at /Users/Home/Code/spirograph/spirographApp/for_redistribution/MyAppInstaller_web.app.
+Packaging complete.
+Elapsed packaging time was: 33 seconds.
