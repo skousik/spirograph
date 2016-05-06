@@ -57,7 +57,7 @@ handles.l = [1 0.8] ; % link lengths
 handles.w = [1 -1] ; % angular velocities
 handles.f = zeros(length(handles.l)) ;
 handles.T = 2*pi ; % distance of revolution in radians
-handles.N = 250 ; % number of data points to simulate
+handles.N = 500 ; % number of data points to simulate
 handles.p = spirograph(handles.l,handles.w,handles.f,handles.T,handles.N) ;
 handles.axisSize = 1.2*sum(abs(handles.l)) ;
 
@@ -104,8 +104,8 @@ nw = length(w) ;
 
 if nw < nl
     w = [w zeros(1,nl-nw)] ;
-elseif nw > nl
-    w = w(1:nl) ;
+% elseif nw > nl
+%     w = w(1:nl) ; legacy behavior
 end
 handles.l = l ;
 handles.w = w ;
@@ -148,10 +148,10 @@ l = handles.l ;
 nl = length(l) ;
 nw = length(w) ;
 
-if nw < nl
-    l = l(1:nw) ;
-elseif nw > nl
+if nw > nl
     l = [l zeros(1,nw-nl)] ;
+% elseif nw < nl
+%     l = l(1:nw) ; legacy behavior
 end
 handles.l = l ;
 handles.w = w ;
@@ -189,7 +189,7 @@ function editReso_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-N = floor(500*get(hObject,'Value')) + 1 ;
+N = floor(1000*get(hObject,'Value')) + 1 ;
 handles.N = N ;
 guidata(hObject,handles) ;
 
@@ -228,16 +228,30 @@ w = handles.w ;
 f = handles.f ;
 T = handles.T ;
 N = handles.N ;
+
+nl = length(l) ;
+nw = length(w) ;
+
+if nl > nw
+    l = l(1:nw) ;
+    handles.l = l ;
+    set(handles.editLink,'String',num2str(l))
+elseif nw > nl
+    w = w(1:nl) ;
+    handles.w = w ;
+    set(handles.editVels,'String',num2str(w))
+end
+
 p = spirograph(l,w,f,T,N) ;
 handles.p = p ;
 
-n = length(l) ;
+guidata(hObject,handles) ;
 
 % color setup
 leg_color = [0.3 0.3 0.3] ;
 linewidth = 1.5 ;
 
-pauseLength = (-0.05/499)*(N-1) + 0.055 ;
+pauseLength = (-0.005/999)*(N-1) + 0.0055 ;
 
 for idx1 = 1:N
 % setup plot area
@@ -246,11 +260,11 @@ for idx1 = 1:N
     axis(handles.axisSize.*[-1 1 -1 1]) ;
     
 % plot links
-    if handles.showLinks
+    if handles.showLinks && idx1 < N
         % plot first link
         plot([0,p(1,idx1)],[0,p(2,idx1)],'Color',leg_color,'LineWidth',linewidth)
         % plot subsequent links
-        for idx2 = 3:2:2*n
+        for idx2 = 3:2:2*nl
             plot([p(idx2-2,idx1),p(idx2,idx1)], ...
                  [p(idx2-1,idx1),p(idx2+1,idx1)], ...
                  'Color', leg_color,'LineWidth',linewidth)
