@@ -22,7 +22,7 @@ function varargout = spirographApp(varargin)
 
 % Edit the above text to modify the response to help spirographApp
 
-% Last Modified by GUIDE v2.5 05-May-2016 01:14:37
+% Last Modified by GUIDE v2.5 06-May-2016 21:58:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -66,6 +66,9 @@ set(gca,'Color',[0 0 0]);
 axis(handles.axisSize.*[-1 1 -1 1]) ;
 
 handles.showLinks = false ;
+handles.showColor = false ;
+handles.clearTrace = true ;
+handles.colorRate = 1 ;
 
 % Choose default command line output for spirographApp
 handles.output = hObject;
@@ -189,7 +192,7 @@ function editReso_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-N = floor(1000*get(hObject,'Value')) + 1 ;
+N = floor(2000*get(hObject,'Value')) + 1 ;
 handles.N = N ;
 guidata(hObject,handles) ;
 
@@ -216,11 +219,86 @@ function showLinks_Callback(hObject, eventdata, handles)
 handles.showLinks = get(hObject,'Value') ;
 guidata(hObject,handles) ;
 
+
+% --- Executes on button press in showColor.
+function showColor_Callback(hObject, eventdata, handles)
+% hObject    handle to showColor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of showColor
+handles.showColor = get(hObject,'Value') ;
+guidata(hObject,handles) ;
+
+
+
+function editPhase_Callback(hObject, eventdata, handles)
+% hObject    handle to editPhase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editPhase as text
+%        str2double(get(hObject,'String')) returns contents of editPhase as a double
+f = str2num(get(hObject,'String')) ;
+handles.f = f ;
+guidata(hObject,handles) ;
+
+
+% --- Executes during object creation, after setting all properties.
+function editPhase_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editPhase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function colorRate_Callback(hObject, eventdata, handles)
+% hObject    handle to colorRate (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+handles.colorRate = 0.5*get(hObject,'Value') + 0.001 ;
+guidata(hObject, handles) ;
+
+
+% --- Executes during object creation, after setting all properties.
+function colorRate_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to colorRate (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in clearTrace.
+function clearTrace_Callback(hObject, eventdata, handles)
+% hObject    handle to clearTrace (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of clearTrace
+handles.clearTrace = get(hObject,'Value') ;
+guidata(hObject, handles) ;
+
 % --- Executes on button press in animate.
 function animate_Callback(hObject, eventdata, handles)
 % hObject    handle to animate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% clear axes
+cla
 
 % get latest data
 l = handles.l ;
@@ -231,6 +309,7 @@ N = handles.N ;
 
 nl = length(l) ;
 nw = length(w) ;
+nf = length(f) ;
 
 if nl > nw
     l = l(1:nw) ;
@@ -242,6 +321,15 @@ elseif nw > nl
     set(handles.editVels,'String',num2str(w))
 end
 
+if nl > nf
+    f = [f zeros(nl-nf)] ;
+elseif nf < nl
+    f = f(1:nl) ;
+end
+
+handles.f = f ;
+set(handles.editPhase,'String',num2str(f))
+
 p = spirograph(l,w,f,T,N) ;
 handles.p = p ;
 
@@ -251,7 +339,7 @@ guidata(hObject,handles) ;
 leg_color = [0.3 0.3 0.3] ;
 linewidth = 1.5 ;
 
-pauseLength = (-0.005/999)*(N-1) + 0.0055 ;
+pauseLength = (-0.0075/1999)*(N-1) + 0.0075 ;
 
 for idx1 = 1:N
 % setup plot area
@@ -270,14 +358,20 @@ for idx1 = 1:N
                  'Color', leg_color,'LineWidth',linewidth)
         end
     end
-
+    
 % plot end curve
-    plot(p(end-1,1:idx1),p(end,1:idx1),'w','LineWidth',linewidth)
+    if handles.showColor
+        rate = idx1*handles.colorRate ;
+        c = [abs(sin(rate)) abs(sin(rate+2*pi/3)) abs(sin(rate+4*pi/3))]./1.01 ;
+        plot(p(end-1,1:idx1),p(end,1:idx1),'Color',c,'LineWidth',linewidth)
+    else
+        plot(p(end-1,1:idx1),p(end,1:idx1),'w','LineWidth',linewidth)
+    end
     
     pause(pauseLength) ;
     
 % clear plot after each time step
-    if idx1 < N
+    if idx1 < N && handles.clearTrace
         cla
     end
 end
