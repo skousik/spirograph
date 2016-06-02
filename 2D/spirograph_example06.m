@@ -20,6 +20,6 @@ c = [140.*abs(sin(W)) 140.*abs(sin(W+2*pi/3)) 140.*abs(sin(W+4*pi/3))]./141 ;
 
 for idx = 1:2:r
     plot(p(idx,:),p(idx+1,:),'Color',c)
-    getframe ;
+    pause(0.03) ;
 end
 end

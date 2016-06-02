@@ -39,7 +39,7 @@ for idx1 = 1:N
     % plot end curve
     plot(p(end-1,1:idx1),p(end,1:idx1),'w')
     
-    M(idx1) = getframe ;
+    pause(0.01) ;
     
     if idx1 < N
         clf

@@ -1,8 +1,12 @@
-figure(1)
+h = figure(1) ;
 hold on
+set(gca,'Color',[0 0 0]);
+set(h,'Position',[500 250 600 600])
+axis equal
+axis(1.5.*[-1 1 -1 1])
 
 for W = 1:3:500
-cap = 4 ;
+cap = mod(W,3) ;
 T = 2*pi ;
 N = 3000 ;
 l = [abs(sind(W)) cosd(W)] ;
@@ -16,12 +20,7 @@ p = spirograph(l,w,f,T,N) ;
 c = [140.*abs(sin(W)) 140.*abs(sin(W+2*pi/3)) 140.*abs(sin(W+4*pi/3))]./141 ;
 
 for idx = 1:2:r
-    if mod(W,7) == 0
-        clf
-    end
     plot(p(idx,:),p(idx+1,:),'Color',c)
-    set(gca,'Color',[0 0 0]);
-    axis equal
 end
-    getframe ;
+    pause(0.03) ;
 end
